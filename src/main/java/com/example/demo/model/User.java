@@ -1,16 +1,29 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class User {
 
-    private int userId;
+    @Id
+    @GeneratedValue
+    private Integer userId;
     private String name;
     private String surname;
+    @Column(unique = true)
     private String login;
     private String password;
+    @Column(unique = true)
     private String email;
+    @JsonIgnore
+    @ManyToMany
     private List<User> friendsList;
+    @JsonIgnore
+    @ManyToMany
     private List<Event> events;
 
     public User(String name, String surname, String login, String password, String email) {
@@ -19,16 +32,18 @@ public class User {
         this.login = login;
         this.password = password;
         this.email = email;
+        this.friendsList = new ArrayList<>();
+        this.events = new ArrayList<>();
     }
 
     public User() {
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

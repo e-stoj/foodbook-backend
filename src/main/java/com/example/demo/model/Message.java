@@ -1,10 +1,17 @@
 package com.example.demo.model;
 
+import javax.persistence.*;
+
+@Entity
 public class Message {
 
+    @Id
+    @GeneratedValue
     private int messageId;
+    @ManyToOne
     private User user;
     private String text;
+    @ManyToOne
     private Event event;
 
     public Message(User user, String text, Event event) {

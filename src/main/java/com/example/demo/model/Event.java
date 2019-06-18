@@ -1,24 +1,42 @@
 package com.example.demo.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Event {
 
+    @Id
+    @GeneratedValue
     private int eventId;
+    private String eventName;
+    @ManyToOne
     private Local local;
-    private Date date;
+    private LocalDate date;
+    private LocalTime time;
     private String motive;
+    @ManyToMany
     private List<User> participants;
+    @JsonIgnore
+    @OneToMany
     private List<Message> messages;
 
-    public Event(Local local, Date date, String motive) {
-        this.local = local;
+    public Event(String eventName, LocalDate date, LocalTime time, String motive, List<User> participants) {
+        this.eventName = eventName;
         this.date = date;
+        this.time = time;
         this.motive = motive;
+        this.participants = participants;
+        this.messages = new ArrayList<>();
     }
 
     public Event() {
+        this.messages = new ArrayList<>();
     }
 
     public int getEventId() {
@@ -29,6 +47,14 @@ public class Event {
         this.eventId = eventId;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
     public Local getLocal() {
         return local;
     }
@@ -37,12 +63,20 @@ public class Event {
         this.local = local;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public String getMotive() {
@@ -53,6 +87,7 @@ public class Event {
         this.motive = motive;
     }
 
+    @JsonIgnore
     public List<User> getParticipants() {
         return participants;
     }
