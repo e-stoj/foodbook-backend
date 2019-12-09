@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -21,10 +23,12 @@ public class User {
     private String email;
     @JsonIgnore
     @ManyToMany
-    private List<User> friendsList;
+    private Set<User> friendsList;
     @JsonIgnore
     @ManyToMany
     private List<Event> events;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Confirm> confirmList;
 
     public User(String name, String surname, String login, String password, String email) {
         this.name = name;
@@ -32,8 +36,9 @@ public class User {
         this.login = login;
         this.password = password;
         this.email = email;
-        this.friendsList = new ArrayList<>();
+        this.friendsList = new HashSet<>();
         this.events = new ArrayList<>();
+        this.confirmList = new ArrayList<>();
     }
 
     public User() {
@@ -87,11 +92,11 @@ public class User {
         this.email = email;
     }
 
-    public List<User> getFriendsList() {
+    public Set<User> getFriendsList() {
         return friendsList;
     }
 
-    public void setFriendsList(List<User> friendsList) {
+    public void setFriendsList(Set<User> friendsList) {
         this.friendsList = friendsList;
     }
 
@@ -101,5 +106,13 @@ public class User {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public List<Confirm> getConfirmList() {
+        return confirmList;
+    }
+
+    public void setConfirmList(List<Confirm> confirmList) {
+        this.confirmList = confirmList;
     }
 }

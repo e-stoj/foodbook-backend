@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.model.Local;
-import com.example.demo.model.Motives;
+import com.example.demo.model.enums.Motives;
 import com.example.demo.repositories.LocalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,14 @@ public class LocalController {
 
     @PostMapping("/locals")
     public ResponseEntity addLocal(@RequestBody Local local) {
+        localRepository.save(local);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/locals/{id}")
+    public ResponseEntity editLocal(@PathVariable Integer id, @RequestBody Local local) {
+        Local oldLocal = localRepository.findById(id).orElseThrow(() -> new RuntimeException("no local"));
+        local.setLocalId(id);
         localRepository.save(local);
         return new ResponseEntity(HttpStatus.OK);
     }

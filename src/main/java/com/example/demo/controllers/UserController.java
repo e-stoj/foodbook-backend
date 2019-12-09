@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", allowCredentials = "true", maxAge = 3600L)
 @RestController
@@ -53,27 +54,30 @@ public class UserController {
         return (List<User>) users;
     }
 
-    @PostMapping("/users")
-    public ResponseEntity addUser(@RequestBody User user) {
-        userRepository.save(user);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity deleteUser(@PathVariable Integer id) {
-        userRepository.deleteById(id);
-        return  new ResponseEntity(HttpStatus.OK);
-    }
-
     @PutMapping("/users/{id}")
     public User addFriend(@PathVariable Integer id, @RequestBody User friend) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user find"));
-        List<User> friendsList = user.getFriendsList();
+        Set<User> friendsList = user.getFriendsList();
         friendsList.add(friend);
         user.setFriendsList(friendsList);
         User user2 = userRepository.findById(friend.getUserId()).orElseThrow(() -> new RuntimeException("no user"));
-        List<User> friendsList2 = user2.getFriendsList();
+        Set<User> friendsList2 = user2.getFriendsList();
         friendsList2.add(user);
+        user2.setFriendsList(friendsList2);
+        userRepository.save(user);
+        userRepository.save(user2);
+        return user;
+    }
+
+    @DeleteMapping("/users/{id}")
+    public User deleteFriend(@PathVariable Integer id, @RequestBody User friend) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user find"));
+        Set<User> friendsList = user.getFriendsList();
+        friendsList.remove(friend);
+        user.setFriendsList(friendsList);
+        User user2 = userRepository.findById(friend.getUserId()).orElseThrow(() -> new RuntimeException("no user"));
+        Set<User> friendsList2 = user2.getFriendsList();
+        friendsList2.remove(user);
         user2.setFriendsList(friendsList2);
         userRepository.save(user);
         userRepository.save(user2);
@@ -86,9 +90,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends")
-    public List<User> getUserFriends(@PathVariable Integer id) {
+    public Set<User> getUserFriends(@PathVariable Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user "));
-        List<User> userList = user.getFriendsList();
+        Set<User> userList = user.getFriendsList();
         return userList;
     }
 

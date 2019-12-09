@@ -1,9 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.model.Event;
-import com.example.demo.model.Local;
-import com.example.demo.model.Message;
-import com.example.demo.model.User;
+import com.example.demo.model.*;
+import com.example.demo.repositories.ConfirmRepository;
 import com.example.demo.repositories.EventRepository;
 import com.example.demo.repositories.LocalRepository;
 import com.example.demo.repositories.UserRepository;
@@ -25,6 +23,8 @@ public class EventController {
     UserRepository userRepository;
     @Autowired
     LocalRepository localRepository;
+    @Autowired
+    ConfirmRepository confirmRepository;
 
     @GetMapping("/events")
     public List<Event> getAllEvents() {
@@ -40,6 +40,13 @@ public class EventController {
                 .collect(Collectors.toList());
         event.setLocal(local);
         event.setParticipants(userList);
+        List<Confirm> confirms = userList.stream()
+                .map(user -> new Confirm(user, event))
+                .collect(Collectors.toList());
+
+        confirms.forEach(confirm -> confirmRepository.save(confirm));
+
+        event.setConfirmList(confirms);
         eventRepository.save(event);
         for (User user : userList) {
             List<Event> events = user.getEvents();
@@ -47,6 +54,16 @@ public class EventController {
             user.setEvents(events);
             userRepository.save(user);
         }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/events/{id}")
+    public ResponseEntity editEvent(@PathVariable Integer id, @RequestBody Event event) {
+        Event oldEvent = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("no event"));
+        event.setEventId(id);
+        event.setParticipants(oldEvent.getParticipants());
+        event.setConfirmList(oldEvent.getConfirmList());
+        eventRepository.save(event);
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -25,6 +25,8 @@ public class Event {
     @JsonIgnore
     @OneToMany
     private List<Message> messages;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Confirm> confirmList;
 
     public Event(String eventName, LocalDate date, LocalTime time, String motive, List<User> participants) {
         this.eventName = eventName;
@@ -33,6 +35,7 @@ public class Event {
         this.motive = motive;
         this.participants = participants;
         this.messages = new ArrayList<>();
+        this.confirmList = new ArrayList<>();
     }
 
     public Event() {
@@ -102,5 +105,13 @@ public class Event {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public List<Confirm> getConfirmList() {
+        return confirmList;
+    }
+
+    public void setConfirmList(List<Confirm> confirmList) {
+        this.confirmList = confirmList;
     }
 }
