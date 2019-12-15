@@ -11,10 +11,8 @@ public class Confirm {
     @Id
     @GeneratedValue
     private Integer confirmId;
-    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.ALL})
     private User user;
-    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.ALL})
     private Event event;
 

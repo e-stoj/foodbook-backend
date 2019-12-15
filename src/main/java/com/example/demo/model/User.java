@@ -27,6 +27,7 @@ public class User {
     @JsonIgnore
     @ManyToMany
     private List<Event> events;
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Confirm> confirmList;
 

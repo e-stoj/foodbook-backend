@@ -25,6 +25,7 @@ public class Event {
     @JsonIgnore
     @OneToMany
     private List<Message> messages;
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Confirm> confirmList;
 

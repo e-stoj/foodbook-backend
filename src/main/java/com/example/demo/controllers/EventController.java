@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,11 +65,19 @@ public class EventController {
         event.setParticipants(oldEvent.getParticipants());
         event.setConfirmList(oldEvent.getConfirmList());
         eventRepository.save(event);
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/events/{id}")
     public ResponseEntity deleteEvent(@PathVariable Integer id) {
+        Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("no event"));
+        event.getParticipants().forEach(user -> user.getEvents().remove(event));
+        event.getConfirmList().forEach(confirm -> confirm.setUser(null));
+        event.setParticipants(new ArrayList<>());
+        event.setLocal(null);
+        event.setConfirmList(new ArrayList<>());
+        eventRepository.save(event);
         eventRepository.deleteById(id);
         return  new ResponseEntity(HttpStatus.OK);
     }

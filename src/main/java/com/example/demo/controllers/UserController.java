@@ -69,19 +69,19 @@ public class UserController {
         return user;
     }
 
-    @DeleteMapping("/users/{id}")
-    public User deleteFriend(@PathVariable Integer id, @RequestBody User friend) {
+    @PutMapping("/users/{id}/friends")
+    public ResponseEntity deleteFriend(@PathVariable Integer id, @RequestBody User friend) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user find"));
-        Set<User> friendsList = user.getFriendsList();
-        friendsList.remove(friend);
-        user.setFriendsList(friendsList);
         User user2 = userRepository.findById(friend.getUserId()).orElseThrow(() -> new RuntimeException("no user"));
+        Set<User> friendsList = user.getFriendsList();
+        friendsList.remove(user2);
+        user.setFriendsList(friendsList);
         Set<User> friendsList2 = user2.getFriendsList();
         friendsList2.remove(user);
         user2.setFriendsList(friendsList2);
         userRepository.save(user);
         userRepository.save(user2);
-        return user;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/users/{login}")
