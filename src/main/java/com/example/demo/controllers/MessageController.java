@@ -35,6 +35,6 @@ public class MessageController {
         message.setUser(user);
         messageRepository.save(message);
         eventRepository.save(event);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().body(message);
     }
 }

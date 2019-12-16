@@ -24,6 +24,7 @@ public class ConfirmController {
     public Confirm changeConfirmation(@PathVariable Integer eventId, @PathVariable Integer userId, @RequestBody Confirmation confirmation) {
         Confirm confirm = confirmRepository.findByEventEventIdAndUserUserId(eventId, userId)
                 .orElseThrow(() -> new RuntimeException("nie ma nie ma"));
+        confirm.setConfirmation(confirmation);
         confirmRepository.save(confirm);
         return confirm;
     }

@@ -28,7 +28,7 @@ public class LocalController {
     @PostMapping("/locals")
     public ResponseEntity addLocal(@RequestBody Local local) {
         localRepository.save(local);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(local);
     }
 
     @PutMapping("/locals/{id}")
@@ -36,13 +36,13 @@ public class LocalController {
         Local oldLocal = localRepository.findById(id).orElseThrow(() -> new RuntimeException("no local"));
         local.setLocalId(id);
         localRepository.save(local);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(local);
     }
 
     @DeleteMapping("/locals/{id}")
     public ResponseEntity deleteLocal(@PathVariable Integer id) {
         localRepository.deleteById(id);
-        return  new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping("/locals/motives")

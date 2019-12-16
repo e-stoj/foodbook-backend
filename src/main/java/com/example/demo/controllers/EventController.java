@@ -55,7 +55,7 @@ public class EventController {
             user.setEvents(events);
             userRepository.save(user);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().body(event);
     }
 
     @PutMapping("/events/{id}")
@@ -66,7 +66,7 @@ public class EventController {
         event.setConfirmList(oldEvent.getConfirmList());
         eventRepository.save(event);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().body(event);
     }
 
     @DeleteMapping("/events/{id}")
@@ -79,7 +79,7 @@ public class EventController {
         event.setConfirmList(new ArrayList<>());
         eventRepository.save(event);
         eventRepository.deleteById(id);
-        return  new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(event);
     }
 
     @GetMapping("/events/{id}/participants")
